@@ -12,20 +12,17 @@ class DashBoard extends StatefulWidget {
 class _DashBoardState extends State<DashBoard> {
   Timer timer;
   int counter = 0;
+
+  var totalLeads;
   Future<List<dynamic>> fetchUsers() async {
     String url = 'http://us.rdigs.com/jsonData.php';
-    //  print(url);
-
     var result = await http.get(url, headers: {
       'Content-Type': 'application/json',
       'Accept': 'application/json',
     });
-    //print(result.statusCode);
     if (result.statusCode == 200) {
       return json.decode(result.body);
     } else {
-      // If the server not return a 200 OK ,
-      // then throw the exception.
       throw Exception('Failed');
     }
   }
@@ -38,13 +35,6 @@ class _DashBoardState extends State<DashBoard> {
     return leads['leads'];
   }
 
-  /*  Future<UserData> userdata;
-  @override
-  void initState() {
-    super.initState();
-    userdata = fetchUsers();
-  }
- */
   @override
   void initState() {
     super.initState();
@@ -57,12 +47,9 @@ class _DashBoardState extends State<DashBoard> {
     });
   }
 
-  var totalLeads;
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        // backgroundColor: Color.fromRGBO(198, 159, 169, 1),
         body: Column(
       children: [
         ClipPath(
@@ -97,21 +84,17 @@ class _DashBoardState extends State<DashBoard> {
                   totalLeads = snapshot.data
                       .map<int>((m) => int.parse(m["leads"]))
                       .reduce((a, b) => a + b);
-
                   print(totalLeads.toString());
-                  Text('Data');
                   if (snapshot.hasData) {
                     return GridView.builder(
                         itemCount: snapshot.data.length,
                         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 6,
+                          crossAxisCount: 2,
                           childAspectRatio:
-                              MediaQuery.of(context).size.height / 350,
+                              MediaQuery.of(context).size.height / 340,
                         ),
                         padding: EdgeInsets.all(8),
                         itemBuilder: (BuildContext context, int index) {
-                          //  print(leads(snapshot.data[index]));
-
                           return Card(
                             shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.only(
@@ -153,15 +136,5 @@ class _DashBoardState extends State<DashBoard> {
                 }))
       ],
     ));
-  }
-
-  void submitData(Map x) async {
-    var tot = 0;
-
-    x.forEach((key, leads) {
-      tot += (leads[1]);
-      print('Total Leads');
-      print(tot);
-    });
   }
 }
